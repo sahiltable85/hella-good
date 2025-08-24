@@ -42,6 +42,13 @@ html {
   --font-instrument-serif: ${instrumentSerif.variable};
 }
         `}</style>
+     
+        <link
+  rel="preload"
+  as="video"
+  href="https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video.mp4"
+  type="video/mp4"
+/>
       </head>
       <body className={`${figtree.variable} ${instrumentSerif.variable}`}>{children}</body>
     </html>
