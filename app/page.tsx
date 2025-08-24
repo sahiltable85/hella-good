@@ -1,6 +1,16 @@
-// app/page.tsx
-import HomeClient from "./home-client";
+"use client"
 
-export default function Page() {
-  return <HomeClient />;
+import Header from "@/components/header"
+import HeroContent from "@/components/hero-content"
+import VideoBackground from "@/components/video-background"
+import PulsingCircle from "@/components/pulsing-circle"
+
+export default function ShaderShowcase() {
+  return (
+    <VideoBackground>
+      <Header />
+      <HeroContent />
+      <PulsingCircle />
+    </VideoBackground>
+  )
 }

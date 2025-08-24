@@ -8,7 +8,10 @@ interface VideoBackgroundProps {
   videoSrc?: string
 }
 
-export default function VideoBackground({ children, videoSrc = "/videos/hella-hero.mp4" }: VideoBackgroundProps) {
+export default function VideoBackground({
+  children,
+  videoSrc = "https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video.mp4",
+}: VideoBackgroundProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -33,8 +36,9 @@ export default function VideoBackground({ children, videoSrc = "/videos/hella-he
           isLoaded ? "opacity-100" : "opacity-0"
         }`}
         autoPlay
-        muted
         loop
+        muted
+        controls
         playsInline
         preload="metadata"
       >
@@ -42,9 +46,6 @@ export default function VideoBackground({ children, videoSrc = "/videos/hella-he
         {/* Fallback gradient background if video fails to load */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-600 to-yellow-500" />
       </video>
-
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/40" />
 
       {/* Loading fallback with burger brand colors */}
       {!isLoaded && <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />}
