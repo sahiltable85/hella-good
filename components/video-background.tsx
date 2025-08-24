@@ -13,17 +13,17 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    const handleLoadedData = () => setIsLoaded(true)
+    const markLoaded = () => setIsLoaded(true)
 
-    const d = desktopRef.current
-    const m = mobileRef.current
+    desktopRef.current?.addEventListener("canplay", markLoaded)
+    mobileRef.current?.addEventListener("canplay", markLoaded)
 
-    d?.addEventListener("loadeddata", handleLoadedData)
-    m?.addEventListener("loadeddata", handleLoadedData)
+    desktopRef.current?.play().catch(() => {})
+    mobileRef.current?.play().catch(() => {})
 
     return () => {
-      d?.removeEventListener("loadeddata", handleLoadedData)
-      m?.removeEventListener("loadeddata", handleLoadedData)
+      desktopRef.current?.removeEventListener("canplay", markLoaded)
+      mobileRef.current?.removeEventListener("canplay", markLoaded)
     }
   }, [])
 
@@ -39,9 +39,12 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
       >
-        <source src="https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video.mp4" type="video/mp4" />
+        <source
+          src="https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video.mp4"
+          type="video/mp4"
+        />
       </video>
 
       {/* Mobile video */}
@@ -54,7 +57,7 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
       >
         <source
           src="https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video_Vertical.mp4"
@@ -62,7 +65,7 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         />
       </video>
 
-      {/* Gradient fallback while loading */}
+      {/* Fallback gradient */}
       {!isLoaded && (
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
       )}
