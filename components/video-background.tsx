@@ -10,22 +10,44 @@ interface VideoBackgroundProps {
 export default function VideoBackground({ children }: VideoBackgroundProps) {
   const desktopRef = useRef<HTMLVideoElement>(null)
   const mobileRef = useRef<HTMLVideoElement>(null)
+
   const [isLoaded, setIsLoaded] = useState(false)
+  const [needsUnmute, setNeedsUnmute] = useState(true)
 
   useEffect(() => {
     const markLoaded = () => setIsLoaded(true)
 
-    desktopRef.current?.addEventListener("canplay", markLoaded)
-    mobileRef.current?.addEventListener("canplay", markLoaded)
+    const d = desktopRef.current
+    const m = mobileRef.current
 
-    desktopRef.current?.play().catch(() => {})
-    mobileRef.current?.play().catch(() => {})
+    d?.addEventListener("canplay", markLoaded)
+    m?.addEventListener("canplay", markLoaded)
+
+    // Kick off autoplay (muted) for both – only the visible one is shown
+    d?.play().catch(() => {})
+    m?.play().catch(() => {})
 
     return () => {
-      desktopRef.current?.removeEventListener("canplay", markLoaded)
-      mobileRef.current?.removeEventListener("canplay", markLoaded)
+      d?.removeEventListener("canplay", markLoaded)
+      m?.removeEventListener("canplay", markLoaded)
     }
   }, [])
+
+  const enableSound = async () => {
+    setNeedsUnmute(false)
+    const targets = [desktopRef.current, mobileRef.current].filter(Boolean) as HTMLVideoElement[]
+    for (const v of targets) {
+      try {
+        v.muted = false
+        v.volume = 0.6
+        // iOS/Safari often needs play() on the same gesture that unmutes
+        await v.play()
+      } catch {
+        // If play fails, fall back to showing native controls for the user
+        v.controls = true
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -37,7 +59,7 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         }`}
         autoPlay
         loop
-        muted
+        muted={needsUnmute}
         playsInline
         preload="auto"
       >
@@ -55,7 +77,7 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         }`}
         autoPlay
         loop
-        muted
+        muted={needsUnmute}
         playsInline
         preload="auto"
       >
@@ -65,10 +87,19 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         />
       </video>
 
-      {/* Fallback gradient */}
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
+      {/* Tap-to-unmute button */}
+      {needsUnmute && (
+        <button
+          onClick={enableSound}
+          className="absolute z-10 bottom-4 right-4 md:bottom-6 md:right-6 rounded-full bg-white/90 hover:bg-white text-black px-3 py-2 md:px-4 md:py-2 text-xs md:text-sm font-medium shadow-lg backdrop-blur"
+          aria-label="Enable sound"
+        >
+          Tap for sound
+        </button>
       )}
+
+      {/* Gradient fallback while loading */}
+      {!isLoaded && <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />}
 
       {children}
     </div>
