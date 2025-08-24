@@ -41,7 +41,7 @@ export default function VideoBackground({ children }: VideoBackgroundProps) {
         playsInline
         preload="metadata"
       >
-        <source src="/Hella_Hero_Video.mp4" type="video/mp4" />
+        <source src="https://tcubnxddig2ns7zi.public.blob.vercel-storage.com/Hella_Hero_Video.mp4" type="video/mp4" />
       </video>
 
       {/* Mobile video */}
