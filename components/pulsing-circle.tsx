@@ -1,6 +1,6 @@
 "use client"
 
-import { PulsingBorder } from "@paper-design/shaders-react"
+import { PulsingBorder } from "@paper-design/react-shaders"
 import { motion } from "framer-motion"
 
 export default function PulsingCircle() {
